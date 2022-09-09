@@ -25,9 +25,6 @@ jobs:
     - name: "Bump version Dockerfile"
       run: |
         sed -ie "s/LABEL version=\"*.*.*\"/LABEL version=\"${{steps.tagging.outputs.new_tag}}\"/" docker/Dockerfile
-    - name: "Bump version file"
-      run: |
-        sed -ie "s/__version__ = \"*.*.*\"/__version__ = \"${{steps.tagging.outputs.new_tag}}\"/" client/__init__.py
     - name: "✏️ Generate full changelog"
       uses: heinrichreimer/github-changelog-generator-action@v2.3
       with:
@@ -97,15 +94,6 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: gpao/client-gpao:${{steps.tagging.outputs.new_tag}},gpao/client-gpao:latest
+        tags: gpao/database:${{steps.tagging.outputs.new_tag}},gpao/database:latest
         context: .
         file: docker/Dockerfile
-    - name: Build and publish
-      run: |
-        pip install twine
-        python setup.py sdist bdist_wheel
-        twine check dist/*
-    - name: Publish Python package to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
