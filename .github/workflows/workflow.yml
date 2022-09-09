@@ -54,7 +54,7 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "github-actions[bot]"
-        git add CHANGELOG.md client/__init__.py docker/Dockerfile
+        git add CHANGELOG.md docker/Dockerfile
         git commit -m "[bot] Update changelog and version"
         git push
         git tag -d ${{steps.tagging.outputs.new_tag}}
