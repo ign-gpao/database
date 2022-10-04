@@ -1,5 +1,17 @@
 # 📑 Changelog
 
+## [0.3.1](https://github.com/ign-gpao/database/tree/0.3.1) (2022-10-04)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.3.0...0.3.1)
+
+### 🚀 Enhancements
+
+- MAJ postgres 14 [\#3](https://github.com/ign-gpao/database/issues/3)
+
+### 📁 Other issues
+
+- Postgres : Nouveau repository [\#1](https://github.com/ign-gpao/database/issues/1)
+
 ## [0.3.0](https://github.com/ign-gpao/database/tree/0.3.0) (2022-09-09)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.1.0...0.3.0)
