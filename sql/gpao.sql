@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2 (Debian 11.2-1.pgdg90+1)
--- Dumped by pg_dump version 11.2 (Debian 11.2-1.pgdg90+1)
+-- Dumped from database version 14.2 (Debian 14.2-1.pgdg110+1)
+-- Dumped by pg_dump version 14.2 (Debian 14.2-1.pgdg110+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,27 +12,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- Name: gpao; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE gpao WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
-
-
-ALTER DATABASE gpao OWNER TO postgres;
-
-\connect gpao
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -120,6 +100,25 @@ $$;
 
 
 ALTER FUNCTION public.clean_database() OWNER TO postgres;
+
+--
+-- Name: clean_old_session(character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.clean_old_session(hostname character varying) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  nb_sessions integer;
+BEGIN
+  UPDATE sessions SET status = 'closed', end_date=NOW() WHERE sessions.host LIKE hostname AND status <> 'closed';
+  GET DIAGNOSTICS nb_sessions = ROW_COUNT;
+  RETURN nb_sessions;
+END;
+$$;
+
+
+ALTER FUNCTION public.clean_old_session(hostname character varying) OWNER TO postgres;
 
 --
 -- Name: clean_unused_session(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -444,7 +443,7 @@ ALTER FUNCTION public.update_session_when_job_change() OWNER TO postgres;
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: jobdependencies; Type: TABLE; Schema: public; Owner: postgres
@@ -1147,63 +1146,63 @@ CREATE OR REPLACE VIEW public.view_projects AS
 -- Name: jobdependencies update_job_when_jobdependency_inserted; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER update_job_when_jobdependency_inserted AFTER INSERT ON public.jobdependencies FOR EACH STATEMENT EXECUTE PROCEDURE public.update_job_when_jobdependency_inserted();
+CREATE TRIGGER update_job_when_jobdependency_inserted AFTER INSERT ON public.jobdependencies FOR EACH STATEMENT EXECUTE FUNCTION public.update_job_when_jobdependency_inserted();
 
 
 --
 -- Name: jobdependencies update_job_when_jobdependency_unactivate; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER update_job_when_jobdependency_unactivate AFTER UPDATE OF active ON public.jobdependencies FOR EACH STATEMENT EXECUTE PROCEDURE public.update_job_when_jobdependency_unactivate();
+CREATE TRIGGER update_job_when_jobdependency_unactivate AFTER UPDATE OF active ON public.jobdependencies FOR EACH STATEMENT EXECUTE FUNCTION public.update_job_when_jobdependency_unactivate();
 
 
 --
 -- Name: projects update_job_when_project_change; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER update_job_when_project_change AFTER UPDATE OF status ON public.projects FOR EACH ROW EXECUTE PROCEDURE public.update_job_when_project_change();
+CREATE TRIGGER update_job_when_project_change AFTER UPDATE OF status ON public.projects FOR EACH ROW EXECUTE FUNCTION public.update_job_when_project_change();
 
 
 --
 -- Name: jobs update_jobdependencies_when_job_done; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER update_jobdependencies_when_job_done AFTER UPDATE OF status ON public.jobs FOR EACH ROW EXECUTE PROCEDURE public.update_jobdependencies_when_job_done();
+CREATE TRIGGER update_jobdependencies_when_job_done AFTER UPDATE OF status ON public.jobs FOR EACH ROW EXECUTE FUNCTION public.update_jobdependencies_when_job_done();
 
 
 --
 -- Name: jobs update_project_when_job_done; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER update_project_when_job_done AFTER UPDATE OF status ON public.jobs FOR EACH STATEMENT EXECUTE PROCEDURE public.update_project_when_job_done();
+CREATE TRIGGER update_project_when_job_done AFTER UPDATE OF status ON public.jobs FOR EACH STATEMENT EXECUTE FUNCTION public.update_project_when_job_done();
 
 
 --
 -- Name: projectdependencies update_project_when_projectdependency_inserted; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER update_project_when_projectdependency_inserted AFTER INSERT ON public.projectdependencies FOR EACH STATEMENT EXECUTE PROCEDURE public.update_project_when_projectdependency_inserted();
+CREATE TRIGGER update_project_when_projectdependency_inserted AFTER INSERT ON public.projectdependencies FOR EACH STATEMENT EXECUTE FUNCTION public.update_project_when_projectdependency_inserted();
 
 
 --
 -- Name: projectdependencies update_project_when_projectdependency_unactivate; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER update_project_when_projectdependency_unactivate AFTER UPDATE OF active ON public.projectdependencies FOR EACH STATEMENT EXECUTE PROCEDURE public.update_project_when_projectdepency_unactivate();
+CREATE TRIGGER update_project_when_projectdependency_unactivate AFTER UPDATE OF active ON public.projectdependencies FOR EACH STATEMENT EXECUTE FUNCTION public.update_project_when_projectdepency_unactivate();
 
 
 --
 -- Name: projects update_projectdependencies_when_project_done; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER update_projectdependencies_when_project_done AFTER UPDATE OF status ON public.projects FOR EACH ROW EXECUTE PROCEDURE public.update_projectdependencies_when_project_done();
+CREATE TRIGGER update_projectdependencies_when_project_done AFTER UPDATE OF status ON public.projects FOR EACH ROW EXECUTE FUNCTION public.update_projectdependencies_when_project_done();
 
 
 --
 -- Name: jobs update_session_when_job_change; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER update_session_when_job_change AFTER UPDATE OF status ON public.jobs FOR EACH ROW EXECUTE PROCEDURE public.update_session_when_job_change();
+CREATE TRIGGER update_session_when_job_change AFTER UPDATE OF status ON public.jobs FOR EACH ROW EXECUTE FUNCTION public.update_session_when_job_change();
 
 
 --
