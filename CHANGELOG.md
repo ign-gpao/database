@@ -1,5 +1,13 @@
 # 📑 Changelog
 
+## [0.4.1](https://github.com/ign-gpao/database/tree/0.4.1) (2022-12-08)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.4.0...0.4.1)
+
+### 📁 Other pull requests
+
+- fix create database \#patch [\#13](https://github.com/ign-gpao/database/pull/13) ([arnaudbirk](https://github.com/arnaudbirk))
+
 ## [0.4.0](https://github.com/ign-gpao/database/tree/0.4.0) (2022-12-08)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.3.2...0.4.0)
