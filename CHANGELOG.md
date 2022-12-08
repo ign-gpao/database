@@ -1,5 +1,17 @@
 # 📑 Changelog
 
+## [0.4.0](https://github.com/ign-gpao/database/tree/0.4.0) (2022-12-08)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.3.2...0.4.0)
+
+### 🐛 Bug fixes
+
+- Locale en\_US par défaut [\#10](https://github.com/ign-gpao/database/issues/10)
+
+### 📁 Other pull requests
+
+- Add function clean\_old\_session [\#12](https://github.com/ign-gpao/database/pull/12) ([arnaudbirk](https://github.com/arnaudbirk))
+
 ## [0.3.2](https://github.com/ign-gpao/database/tree/0.3.2) (2022-10-04)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.3.1...0.3.2)
