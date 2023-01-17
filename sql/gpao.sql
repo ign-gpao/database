@@ -318,6 +318,26 @@ $$;
 ALTER FUNCTION public.update_job_when_project_change() OWNER TO postgres;
 
 --
+-- Name: update_job_when_session_closed(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.update_job_when_session_closed() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF (NEW.status = 'closed' AND NEW.status <> OLD.status) THEN
+       UPDATE public.jobs SET status='ready', id_session = NULL, log=NULL, return_code=NULL, start_date=NULL, end_date=NULL WHERE 
+       status='running'
+       AND id_session = NEW.id;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.update_job_when_session_closed() OWNER TO postgres;
+
+--
 -- Name: update_jobdependencies_when_job_done(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1183,6 +1203,13 @@ CREATE TRIGGER update_job_when_jobdependency_unactivate AFTER UPDATE OF active O
 --
 
 CREATE TRIGGER update_job_when_project_change AFTER UPDATE OF status ON public.projects FOR EACH ROW EXECUTE FUNCTION public.update_job_when_project_change();
+
+
+--
+-- Name: sessions update_job_when_session_closed; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER update_job_when_session_closed AFTER UPDATE OF status ON public.sessions FOR EACH ROW EXECUTE FUNCTION public.update_job_when_session_closed();
 
 
 --
