@@ -1,6 +1,6 @@
 FROM postgres:14.2
 
 LABEL maintainer="IGN"
-LABEL version="0.5.0"
+LABEL version="0.6.0"
 
 ADD sql/gpao.sql /docker-entrypoint-initdb.d/

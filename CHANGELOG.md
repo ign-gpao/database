@@ -1,5 +1,17 @@
 # 📑 Changelog
 
+## [0.6.0](https://github.com/ign-gpao/database/tree/0.6.0) (2023-01-18)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.5.0...0.6.0)
+
+### 🐛 Bug fixes
+
+- Remise a ready des jobs en running après fermeture des clients [\#14](https://github.com/ign-gpao/database/issues/14)
+
+### 📁 Other pull requests
+
+- Add function for reinit job after session closed [\#15](https://github.com/ign-gpao/database/pull/15) ([arnaudbirk](https://github.com/arnaudbirk))
+
 ## [0.5.0](https://github.com/ign-gpao/database/tree/0.5.0) (2023-01-06)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.4.1...0.5.0)
