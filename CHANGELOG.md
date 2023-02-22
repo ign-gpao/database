@@ -1,5 +1,9 @@
 # 📑 Changelog
 
+## [0.7.0](https://github.com/ign-gpao/database/tree/0.7.0) (2023-02-22)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.6.0...0.7.0)
+
 ## [0.6.0](https://github.com/ign-gpao/database/tree/0.6.0) (2023-01-18)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.5.0...0.6.0)
