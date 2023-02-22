@@ -185,10 +185,10 @@ $$;
 ALTER FUNCTION public.reinit_jobs(ids integer[]) OWNER TO postgres;
 
 --
--- Name: set_nb_active_nodes(character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: set_nb_active_session(character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.set_nb_active_nodes(hostname character varying, nb_limit integer) RETURNS void
+CREATE FUNCTION public.set_nb_active_session(hostname character varying, nb_limit integer) RETURNS void
     LANGUAGE plpgsql
     AS $$
 
@@ -204,7 +204,27 @@ END;
 $$;
 
 
-ALTER FUNCTION public.set_nb_active_nodes(hostname character varying, nb_limit integer) OWNER TO postgres;
+ALTER FUNCTION public.set_nb_active_session(hostname character varying, nb_limit integer) OWNER TO postgres;
+
+--
+-- Name: set_nb_active_sessions(character varying[], integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.set_nb_active_sessions(hostnames character varying[], nb_limit integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+hostname varchar;
+BEGIN
+FOREACH hostname IN ARRAY hostnames
+LOOP
+    PERFORM set_nb_active_session(hostname, nb_limit);
+END LOOP;
+END;
+$$;
+
+
+ALTER FUNCTION public.set_nb_active_sessions(hostnames character varying[], nb_limit integer) OWNER TO postgres;
 
 --
 -- Name: udate_jobDependency(); Type: FUNCTION; Schema: public; Owner: postgres
