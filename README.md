@@ -24,7 +24,7 @@ psql -U POSTGRES_ADMIN -h SERVEUR_NAME -f PATH_TO/gpao.sql
 
 Avec ``` POSTGRES_ADMIN ``` = le login postgres avec les droits d'administration et ``` SERVER_NAME ``` = le nom de la machine hébergeant postgres.
 
-Ce script va créer une nouvelle base de données appelée ``` gpao ``` avec l'ensemble des tables, vues, fonctions etc... nécessaire au bon fonctionnement de la GPAO.
+Ce script va créer une nouvelle base de données appelée ``` gpao ``` avec l'ensemble des tables, vues, fonctions, etc., nécessaire au bon fonctionnement de la GPAO.
 
 **Remarque** : Si une base portant le nom gpao est déjà présente, il faudra soit adapter les premières lignes du script SQL ``` CREATE DATABASE gpao ... ``` soit la renommer ou la supprimer.
 
