@@ -1,5 +1,13 @@
 # 📑 Changelog
 
+## [0.9.0](https://github.com/ign-gpao/database/tree/0.9.0) (2023-02-23)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.8.0...0.9.0)
+
+### 📁 Other pull requests
+
+- set\_nb\_active\_sessions [\#17](https://github.com/ign-gpao/database/pull/17) ([ijeuffrard](https://github.com/ijeuffrard))
+
 ## [0.8.0](https://github.com/ign-gpao/database/tree/0.8.0) (2023-02-22)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.7.0...0.8.0)
