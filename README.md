@@ -1,6 +1,6 @@
 # Database
 
-IGN GPAO database est le modèle de données de la base [GPAO](https://github.com/ign-gpao).
+IGN GPAO Database est le modèle de données de la base [GPAO](https://github.com/ign-gpao).
 Pour faciliter son déploiement, ce modèle de données a été dockerisé à partir d'une image officielle de postgres disponible sur [DockerHub](https://hub.docker.com/_/postgres).
 
 ## Prérequis
@@ -30,7 +30,7 @@ Ce script va créer une nouvelle base de données appelée ``` gpao ``` avec l'e
 
 ### Avec Docker
 
-Une image déjà construite est déjà accessible depuis [DockerHub](https://hub.docker.com/r/gpao/database) et peut être directement récupérée via la commande : 
+Une image déjà construite est accessible depuis [DockerHub](https://hub.docker.com/r/gpao/database) et peut être directement récupérée via la commande : 
 
 ``` bash
 docker pull gpao/database:latest
