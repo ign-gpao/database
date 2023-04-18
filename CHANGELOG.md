@@ -1,5 +1,13 @@
 # 📑 Changelog
 
+## [0.11.0](https://github.com/ign-gpao/database/tree/0.11.0) (2023-04-18)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.10.0...0.11.0)
+
+### 📁 Other pull requests
+
+- add priority and status to view\_project\_status\_by\_jobs [\#19](https://github.com/ign-gpao/database/pull/19) ([ijeuffrard](https://github.com/ijeuffrard))
+
 ## [0.10.0](https://github.com/ign-gpao/database/tree/0.10.0) (2023-04-11)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.9.0...0.10.0)
