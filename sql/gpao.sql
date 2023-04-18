@@ -902,7 +902,7 @@ ALTER TABLE public.view_project_status OWNER TO postgres;
 
 CREATE VIEW public.view_project_status_by_jobs AS
  SELECT jobs.id_project,
-    projects.name,
+    projects.name, projects.priority, projects.status,
     sum(
         CASE
             WHEN (jobs.status = 'ready'::public.status) THEN 1
@@ -935,8 +935,7 @@ CREATE VIEW public.view_project_status_by_jobs AS
         END) AS total
    FROM (public.jobs
      JOIN public.projects ON ((projects.id = jobs.id_project)))
-  GROUP BY jobs.id_project, projects.name;
-
+  GROUP BY jobs.id_project, projects.name, projects.priority, projects.status;
 
 ALTER TABLE public.view_project_status_by_jobs OWNER TO postgres;
 
