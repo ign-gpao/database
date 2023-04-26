@@ -846,12 +846,18 @@ CREATE VIEW public.view_project_dependencies AS
     projectdependencies.upstream AS dep_up,
     projectdependencies.downstream AS dep_down,
     projectdependencies.active AS dep_active,
-    projects.id AS project_id,
-    projects.name AS project_name,
-    projects.status AS project_status,
-    projects.priority AS project_priority
+    view_projects.project_id,
+    view_projects.project_name,
+    view_projects.project_status,
+    view_projects.project_priority,
+    view_projects.ready,
+    view_projects.done,
+    view_projects.waiting,
+    view_projects.running,
+    view_projects.failed,
+    view_projects.total	
    FROM (public.projectdependencies
-     JOIN public.projects ON ((projects.id = projectdependencies.upstream)));
+     JOIN public.view_projects ON ((view_projects.project_id = projectdependencies.upstream)));
 
 
 ALTER TABLE public.view_project_dependencies OWNER TO postgres;
@@ -901,8 +907,10 @@ ALTER TABLE public.view_project_status OWNER TO postgres;
 --
 
 CREATE VIEW public.view_project_status_by_jobs AS
- SELECT jobs.id_project,
-    projects.name, projects.priority, projects.status,
+SELECT jobs.id_project AS project_id,
+    projects.name AS project_name, 
+	projects.priority AS project_priority,
+	projects.status AS project_status,
     sum(
         CASE
             WHEN (jobs.status = 'ready'::public.status) THEN 1
