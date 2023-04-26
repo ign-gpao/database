@@ -907,7 +907,7 @@ ALTER TABLE public.view_project_status OWNER TO postgres;
 --
 
 CREATE VIEW public.view_project_status_by_jobs AS
- SELECT jobs.id_project AS project_id,
+SELECT jobs.id_project AS project_id,
     projects.name AS project_name, 
 	projects.priority AS project_priority,
 	projects.status AS project_status,
