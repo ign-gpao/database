@@ -1,5 +1,13 @@
 # 📑 Changelog
 
+## [0.12.0](https://github.com/ign-gpao/database/tree/0.12.0) (2023-04-26)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.11.0...0.12.0)
+
+### 📁 Other pull requests
+
+- Add elements to view project status by jobs [\#20](https://github.com/ign-gpao/database/pull/20) ([ijeuffrard](https://github.com/ijeuffrard))
+
 ## [0.11.0](https://github.com/ign-gpao/database/tree/0.11.0) (2023-04-18)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.10.0...0.11.0)
