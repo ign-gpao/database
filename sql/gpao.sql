@@ -838,6 +838,31 @@ SELECT
 ALTER TABLE public.view_project OWNER TO postgres;
 
 --
+-- Name: view_projects; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.view_projects AS
+SELECT
+    NULL::integer AS project_id,
+    NULL::character varying AS project_name,
+    NULL::public.status AS project_status,
+    NULL::public.priority AS project_priority,
+    NULL::bigint AS count,
+    NULL::numeric AS avg_job_duree,
+    NULL::double precision AS min_job_duree,
+    NULL::double precision AS max_job_duree,
+    NULL::double precision AS total_job_duree,
+    NULL::bigint AS ready,
+    NULL::bigint AS done,
+    NULL::bigint AS waiting,
+    NULL::bigint AS running,
+    NULL::bigint AS failed,
+    NULL::bigint AS total;
+
+
+ALTER TABLE public.view_projects OWNER TO postgres;
+
+--
 -- Name: view_project_dependencies; Type: VIEW; Schema: public; Owner: postgres
 --
 
@@ -855,7 +880,7 @@ CREATE VIEW public.view_project_dependencies AS
     view_projects.waiting,
     view_projects.running,
     view_projects.failed,
-    view_projects.total	
+    view_projects.total
    FROM (public.projectdependencies
      JOIN public.view_projects ON ((view_projects.project_id = projectdependencies.upstream)));
 
@@ -907,10 +932,10 @@ ALTER TABLE public.view_project_status OWNER TO postgres;
 --
 
 CREATE VIEW public.view_project_status_by_jobs AS
-SELECT jobs.id_project AS project_id,
-    projects.name AS project_name, 
-	projects.priority AS project_priority,
-	projects.status AS project_status,
+ SELECT jobs.id_project AS project_id,
+    projects.name AS project_name,
+    projects.priority AS project_priority,
+    projects.status AS project_status,
     sum(
         CASE
             WHEN (jobs.status = 'ready'::public.status) THEN 1
@@ -945,32 +970,8 @@ SELECT jobs.id_project AS project_id,
      JOIN public.projects ON ((projects.id = jobs.id_project)))
   GROUP BY jobs.id_project, projects.name, projects.priority, projects.status;
 
+
 ALTER TABLE public.view_project_status_by_jobs OWNER TO postgres;
-
---
--- Name: view_projects; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.view_projects AS
-SELECT
-    NULL::integer AS project_id,
-    NULL::character varying AS project_name,
-    NULL::public.status AS project_status,
-    NULL::public.priority AS project_priority,
-    NULL::bigint AS count,
-    NULL::numeric AS avg_job_duree,
-    NULL::double precision AS min_job_duree,
-    NULL::double precision AS max_job_duree,
-    NULL::double precision AS total_job_duree,
-    NULL::bigint AS ready,
-    NULL::bigint AS done,
-    NULL::bigint AS waiting,
-    NULL::bigint AS running,
-    NULL::bigint AS failed,
-    NULL::bigint AS total;
-
-
-ALTER TABLE public.view_projects OWNER TO postgres;
 
 --
 -- Name: view_sessions; Type: VIEW; Schema: public; Owner: postgres
