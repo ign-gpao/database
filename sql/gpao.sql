@@ -807,35 +807,12 @@ CREATE VIEW public.view_jobs AS
     projects.name AS project_name,
     to_char(jobs.start_date, 'DD-MM-YYYY'::text) AS date,
     to_char(timezone('UTC'::text, jobs.start_date), 'HH24:MI:SS'::text) AS hms,
-    ((((((date_part('day'::text, (jobs.end_date - jobs.start_date)) * (24)::double precision) + date_part('hour'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + date_part('minute'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + (round((date_part('second'::text, (jobs.end_date - jobs.start_date)))::numeric, 2))::double precision) AS duree
+    (round((((((((date_part('day'::text, (jobs.end_date - jobs.start_date)) * (24)::double precision) + date_part('hour'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + date_part('minute'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + (round((date_part('second'::text, (jobs.end_date - jobs.start_date)))::numeric, 2))::double precision))::numeric, 2))::double precision AS duree
    FROM (public.jobs
      JOIN public.projects ON ((projects.id = jobs.id_project)));
 
 
 ALTER TABLE public.view_jobs OWNER TO postgres;
-
---
--- Name: view_project; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.view_project AS
-SELECT
-    NULL::integer AS project_id,
-    NULL::character varying AS project_name,
-    NULL::public.status AS project_status,
-    NULL::bigint AS count,
-    NULL::numeric AS avg_job_duree,
-    NULL::double precision AS min_job_duree,
-    NULL::double precision AS max_job_duree,
-    NULL::bigint AS ready,
-    NULL::bigint AS done,
-    NULL::bigint AS waiting,
-    NULL::bigint AS running,
-    NULL::bigint AS failed,
-    NULL::bigint AS total;
-
-
-ALTER TABLE public.view_project OWNER TO postgres;
 
 --
 -- Name: view_projects; Type: VIEW; Schema: public; Owner: postgres
@@ -851,7 +828,11 @@ SELECT
     NULL::numeric AS avg_job_duree,
     NULL::double precision AS min_job_duree,
     NULL::double precision AS max_job_duree,
-    NULL::double precision AS total_job_duree,
+    NULL::numeric AS total_job_duree,
+    NULL::text AS project_start_date,
+    NULL::text AS project_end_date,
+    NULL::numeric AS project_duree,
+    NULL::numeric AS parallelization_coeff,
     NULL::bigint AS ready,
     NULL::bigint AS done,
     NULL::bigint AS waiting,
@@ -1117,57 +1098,22 @@ CREATE INDEX id_project_idx ON public.jobs USING btree (id_project);
 
 
 --
--- Name: view_project _RETURN; Type: RULE; Schema: public; Owner: postgres
---
-
-CREATE OR REPLACE VIEW public.view_project AS
- SELECT projects.id AS project_id,
-    projects.name AS project_name,
-    projects.status AS project_status,
-    count(view_jobs.job_id) AS count,
-    round((avg(view_jobs.duree))::numeric, 2) AS avg_job_duree,
-    min(view_jobs.duree) AS min_job_duree,
-    max(view_jobs.duree) AS max_job_duree,
-    COALESCE(sum(
-        CASE
-            WHEN (view_jobs.job_status = 'ready'::public.status) THEN 1
-            ELSE 0
-        END), (0)::bigint) AS ready,
-    COALESCE(sum(
-        CASE
-            WHEN (view_jobs.job_status = 'done'::public.status) THEN 1
-            ELSE 0
-        END), (0)::bigint) AS done,
-    COALESCE(sum(
-        CASE
-            WHEN (view_jobs.job_status = 'waiting'::public.status) THEN 1
-            ELSE 0
-        END), (0)::bigint) AS waiting,
-    COALESCE(sum(
-        CASE
-            WHEN (view_jobs.job_status = 'running'::public.status) THEN 1
-            ELSE 0
-        END), (0)::bigint) AS running,
-    COALESCE(sum(
-        CASE
-            WHEN (view_jobs.job_status = 'failed'::public.status) THEN 1
-            ELSE 0
-        END), (0)::bigint) AS failed,
-    COALESCE(sum(
-        CASE
-            WHEN ((view_jobs.job_status = 'failed'::public.status) OR (view_jobs.job_status = 'running'::public.status) OR (view_jobs.job_status = 'waiting'::public.status) OR (view_jobs.job_status = 'done'::public.status) OR (view_jobs.job_status = 'ready'::public.status)) THEN 1
-            ELSE 0
-        END), (0)::bigint) AS total
-   FROM (public.projects
-     JOIN public.view_jobs ON ((projects.id = view_jobs.job_id_project)))
-  GROUP BY projects.id;
-
-
---
 -- Name: view_projects _RETURN; Type: RULE; Schema: public; Owner: postgres
 --
 
 CREATE OR REPLACE VIEW public.view_projects AS
+ WITH date AS (
+         SELECT view_jobs_1.job_id_project,
+            round((COALESCE(sum(view_jobs_1.duree), (0)::double precision))::numeric, 2) AS total_job_duree,
+            min(view_jobs_1.job_start_date) AS min_start_date,
+            max(view_jobs_1.job_end_date) AS max_end_date
+           FROM public.view_jobs view_jobs_1
+          GROUP BY view_jobs_1.job_id_project
+        ), duree AS (
+         SELECT date_1.job_id_project,
+            ((((((date_part('day'::text, (date_1.max_end_date - date_1.min_start_date)) * (24)::double precision) + date_part('hour'::text, (date_1.max_end_date - date_1.min_start_date))) * (60)::double precision) + date_part('minute'::text, (date_1.max_end_date - date_1.min_start_date))) * (60)::double precision) + (round((date_part('second'::text, (date_1.max_end_date - date_1.min_start_date)))::numeric, 2))::double precision) AS project_duree
+           FROM date date_1
+        )
  SELECT projects.id AS project_id,
     projects.name AS project_name,
     projects.status AS project_status,
@@ -1176,7 +1122,11 @@ CREATE OR REPLACE VIEW public.view_projects AS
     COALESCE(round((avg(view_jobs.duree))::numeric, 2), (0)::numeric) AS avg_job_duree,
     COALESCE(min(view_jobs.duree), (0)::double precision) AS min_job_duree,
     COALESCE(max(view_jobs.duree), (0)::double precision) AS max_job_duree,
-    COALESCE(sum(view_jobs.duree), (0)::double precision) AS total_job_duree,
+    date.total_job_duree,
+    to_char(date.min_start_date, 'DD-MM-YYYY HH24:MI:SS'::text) AS project_start_date,
+    to_char(date.max_end_date, 'DD-MM-YYYY HH24:MI:SS'::text) AS project_end_date,
+    COALESCE(round((duree.project_duree)::numeric, 2), (0)::numeric) AS project_duree,
+    round((((date.total_job_duree)::double precision / duree.project_duree))::numeric, 2) AS parallelization_coeff,
     COALESCE(sum(
         CASE
             WHEN (view_jobs.job_status = 'ready'::public.status) THEN 1
@@ -1207,9 +1157,11 @@ CREATE OR REPLACE VIEW public.view_projects AS
             WHEN ((view_jobs.job_status = 'failed'::public.status) OR (view_jobs.job_status = 'running'::public.status) OR (view_jobs.job_status = 'waiting'::public.status) OR (view_jobs.job_status = 'done'::public.status) OR (view_jobs.job_status = 'ready'::public.status)) THEN 1
             ELSE 0
         END), (0)::bigint) AS total
-   FROM (public.projects
+   FROM (((public.projects
      JOIN public.view_jobs ON ((projects.id = view_jobs.job_id_project)))
-  GROUP BY projects.id;
+     JOIN date ON ((projects.id = date.job_id_project)))
+     JOIN duree ON ((projects.id = duree.job_id_project)))
+  GROUP BY projects.id, date.total_job_duree, date.min_start_date, date.max_end_date, duree.project_duree, (round((((date.total_job_duree)::double precision / duree.project_duree))::numeric, 2));
 
 
 --
