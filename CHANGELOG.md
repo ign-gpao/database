@@ -1,5 +1,13 @@
 # 📑 Changelog
 
+## [0.14.0](https://github.com/ign-gpao/database/tree/0.14.0) (2023-05-12)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.13.0...0.14.0)
+
+### 📁 Other pull requests
+
+- ajout stats view\_projects [\#22](https://github.com/ign-gpao/database/pull/22) ([ijeuffrard](https://github.com/ijeuffrard))
+
 ## [0.13.0](https://github.com/ign-gpao/database/tree/0.13.0) (2023-04-27)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.12.0...0.13.0)
