@@ -503,6 +503,24 @@ $$;
 
 ALTER FUNCTION public.update_session_when_job_change() OWNER TO postgres;
 
+--
+-- Name: update_session_when_project_deleted(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.update_session_when_project_deleted() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$BEGIN
+   UPDATE sessions SET status=(
+    CASE
+    WHEN status = 'idle_requested' AND id IN (SELECT id_session FROM jobs WHERE id_project = OLD.id AND status = 'running') THEN 'idle'::session_status
+    WHEN status = 'running' AND id IN (SELECT id_session FROM jobs WHERE id_project = OLD.id AND status = 'running') THEN 'active'::session_status
+    ELSE status END);
+   RETURN OLD;
+END;$$;
+
+
+ALTER FUNCTION public.update_session_when_project_deleted() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -1232,6 +1250,13 @@ CREATE TRIGGER update_projectdependencies_when_project_done AFTER UPDATE OF stat
 --
 
 CREATE TRIGGER update_session_when_job_change AFTER UPDATE OF status ON public.jobs FOR EACH ROW EXECUTE FUNCTION public.update_session_when_job_change();
+
+
+--
+-- Name: projects update_session_when_project_deleted; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER update_session_when_project_deleted BEFORE DELETE ON public.projects FOR EACH ROW EXECUTE FUNCTION public.update_session_when_project_deleted();
 
 
 --
