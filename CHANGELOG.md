@@ -1,5 +1,13 @@
 # 📑 Changelog
 
+## [0.15.0](https://github.com/ign-gpao/database/tree/0.15.0) (2023-05-17)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.14.0...0.15.0)
+
+### 📁 Other pull requests
+
+- Add trigger when remove project [\#23](https://github.com/ign-gpao/database/pull/23) ([arnaudbirk](https://github.com/arnaudbirk))
+
 ## [0.14.0](https://github.com/ign-gpao/database/tree/0.14.0) (2023-05-12)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.13.0...0.14.0)
