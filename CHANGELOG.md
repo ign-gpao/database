@@ -1,5 +1,21 @@
 # 📑 Changelog
 
+## [Unreleased](https://github.com/ign-gpao/database/tree/HEAD)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.16.0...HEAD)
+
+### 🐛 Bug fixes
+
+- Mise à jour des projets dépendant après suppression d'un projet [\#16](https://github.com/ign-gpao/database/issues/16)
+
+## [0.16.0](https://github.com/ign-gpao/database/tree/0.16.0) (2023-05-17)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.15.0...0.16.0)
+
+### 📁 Other pull requests
+
+- fix pb delete project with dependency [\#25](https://github.com/ign-gpao/database/pull/25) ([arnaudbirk](https://github.com/arnaudbirk))
+
 ## [0.15.0](https://github.com/ign-gpao/database/tree/0.15.0) (2023-05-17)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.14.0...0.15.0)
