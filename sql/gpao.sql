@@ -460,6 +460,26 @@ $$;
 ALTER FUNCTION public.update_project_when_projectdependency_inserted() OWNER TO postgres;
 
 --
+-- Name: update_projectdependencies_when_project_deleted(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.update_projectdependencies_when_project_deleted() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$BEGIN
+	UPDATE projectdependencies SET active = false WHERE upstream = OLD.id;
+	UPDATE projects SET status = 'running' 
+	WHERE id IN 
+	(SELECT downstream FROM projects INNER JOIN projectdependencies ON projects.id = projectdependencies.upstream 
+	WHERE upstream = OLD.id and active = 'f') AND status='waiting';
+	DELETE FROM projectdependencies WHERE upstream = OLD.id;
+   
+   RETURN OLD;
+END;$$;
+
+
+ALTER FUNCTION public.update_projectdependencies_when_project_deleted() OWNER TO postgres;
+
+--
 -- Name: update_projectdependencies_when_project_done(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -1236,6 +1256,13 @@ CREATE TRIGGER update_project_when_projectdependency_inserted AFTER INSERT ON pu
 --
 
 CREATE TRIGGER update_project_when_projectdependency_unactivate AFTER UPDATE OF active ON public.projectdependencies FOR EACH STATEMENT EXECUTE FUNCTION public.update_project_when_projectdepency_unactivate();
+
+
+--
+-- Name: projects update_projectdependencies_when_project_deleted; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER update_projectdependencies_when_project_deleted AFTER DELETE ON public.projects FOR EACH ROW EXECUTE FUNCTION public.update_projectdependencies_when_project_deleted();
 
 
 --
