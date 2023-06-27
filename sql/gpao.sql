@@ -498,6 +498,22 @@ $$;
 ALTER FUNCTION public.update_projectdependencies_when_project_done() OWNER TO postgres;
 
 --
+-- Name: update_session_activity_when_job_update(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.update_session_activity_when_job_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  UPDATE sessions set last_activity = now() WHERE id = OLD.id_session;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.update_session_activity_when_job_update() OWNER TO postgres;
+
+--
 -- Name: update_session_when_job_change(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -706,7 +722,8 @@ CREATE TABLE public.sessions (
     start_date timestamp with time zone NOT NULL,
     end_date timestamp with time zone,
     status public.session_status DEFAULT 'idle'::public.session_status NOT NULL,
-    tags character varying[] DEFAULT '{}'::character varying[] NOT NULL
+    tags character varying[] DEFAULT '{}'::character varying[] NOT NULL,
+    last_activity timestamp with time zone DEFAULT now() NOT NULL
 );
 
 
@@ -1007,7 +1024,8 @@ CREATE VIEW public.view_sessions AS
     to_char(timezone('UTC'::text, sessions.start_date), 'HH24:MI:SS'::text) AS hms_debut,
     ((((((date_part('day'::text, (sessions.end_date - sessions.start_date)) * (24)::double precision) + date_part('hour'::text, (sessions.end_date - sessions.start_date))) * (60)::double precision) + date_part('minute'::text, (sessions.end_date - sessions.start_date))) * (60)::double precision) + (round((date_part('second'::text, (sessions.end_date - sessions.start_date)))::numeric, 2))::double precision) AS duree,
     to_char(sessions.end_date, 'DD-MM-YYYY'::text) AS date_fin,
-    to_char(timezone('UTC'::text, sessions.end_date), 'HH24:MI:SS'::text) AS hms_fin
+    to_char(timezone('UTC'::text, sessions.end_date), 'HH24:MI:SS'::text) AS hms_fin,
+    to_char(timezone('UTC'::text, sessions.last_activity), 'HH24:MI:SS'::text) AS hms_last_activity
    FROM public.sessions;
 
 
@@ -1270,6 +1288,13 @@ CREATE TRIGGER update_projectdependencies_when_project_deleted AFTER DELETE ON p
 --
 
 CREATE TRIGGER update_projectdependencies_when_project_done AFTER UPDATE OF status ON public.projects FOR EACH ROW EXECUTE FUNCTION public.update_projectdependencies_when_project_done();
+
+
+--
+-- Name: jobs update_session_activity_when_job_update; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER update_session_activity_when_job_update BEFORE UPDATE ON public.jobs FOR EACH ROW EXECUTE FUNCTION public.update_session_activity_when_job_update();
 
 
 --
