@@ -1,16 +1,20 @@
 # 📑 Changelog
 
-## [Unreleased](https://github.com/ign-gpao/database/tree/HEAD)
+## [0.17.0](https://github.com/ign-gpao/database/tree/0.17.0) (2023-06-27)
 
-[Full Changelog](https://github.com/ign-gpao/database/compare/0.16.0...HEAD)
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.16.0...0.17.0)
 
-### 🐛 Bug fixes
+### 📁 Other pull requests
 
-- Mise à jour des projets dépendant après suppression d'un projet [\#16](https://github.com/ign-gpao/database/issues/16)
+- update sessions activity [\#27](https://github.com/ign-gpao/database/pull/27) ([arnaudbirk](https://github.com/arnaudbirk))
 
 ## [0.16.0](https://github.com/ign-gpao/database/tree/0.16.0) (2023-05-17)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.15.0...0.16.0)
+
+### 🐛 Bug fixes
+
+- Mise à jour des projets dépendant après suppression d'un projet [\#16](https://github.com/ign-gpao/database/issues/16)
 
 ### 📁 Other pull requests
 
