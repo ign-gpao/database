@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.2 (Debian 14.2-1.pgdg110+1)
--- Dumped by pg_dump version 14.2 (Debian 14.2-1.pgdg110+1)
+-- Dumped from database version 15.4 (Debian 15.4-2.pgdg110+1)
+-- Dumped by pg_dump version 15.4 (Debian 15.4-2.pgdg110+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -20,7 +20,7 @@ SET row_security = off;
 -- Name: gpao; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE gpao WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'en_US.utf8';
+CREATE DATABASE gpao WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.utf8';
 
 
 ALTER DATABASE gpao OWNER TO postgres;
@@ -37,6 +37,20 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+
 
 --
 -- Name: priority; Type: TYPE; Schema: public; Owner: postgres
@@ -612,7 +626,8 @@ CREATE TABLE public.jobs (
     log character varying,
     id_project integer NOT NULL,
     id_session integer,
-    tags character varying[] DEFAULT '{}'::character varying[] NOT NULL
+    tags character varying[] DEFAULT '{}'::character varying[] NOT NULL,
+    geometry public.geometry(Geometry,4326)
 );
 
 
@@ -777,7 +792,8 @@ CREATE VIEW public.view_job AS
     to_char(timezone('UTC'::text, jobs.start_date), 'HH24:MI:SS'::text) AS hms_debut,
     ((((((date_part('day'::text, (jobs.end_date - jobs.start_date)) * (24)::double precision) + date_part('hour'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + date_part('minute'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + (round((date_part('second'::text, (jobs.end_date - jobs.start_date)))::numeric, 2))::double precision) AS duree,
     to_char(jobs.end_date, 'DD-MM-YYYY'::text) AS date_fin,
-    to_char(timezone('UTC'::text, jobs.end_date), 'HH24:MI:SS'::text) AS hms_fin
+    to_char(timezone('UTC'::text, jobs.end_date), 'HH24:MI:SS'::text) AS hms_fin,
+    jobs.geometry AS job_geometry
    FROM ((public.jobs
      JOIN public.projects ON ((projects.id = jobs.id_project)))
      LEFT JOIN public.sessions ON ((sessions.id = jobs.id_session)));
@@ -862,12 +878,43 @@ CREATE VIEW public.view_jobs AS
     projects.name AS project_name,
     to_char(jobs.start_date, 'DD-MM-YYYY'::text) AS date,
     to_char(timezone('UTC'::text, jobs.start_date), 'HH24:MI:SS'::text) AS hms,
-    (round((((((((date_part('day'::text, (jobs.end_date - jobs.start_date)) * (24)::double precision) + date_part('hour'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + date_part('minute'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + (round((date_part('second'::text, (jobs.end_date - jobs.start_date)))::numeric, 2))::double precision))::numeric, 2))::double precision AS duree
+    (round((((((((date_part('day'::text, (jobs.end_date - jobs.start_date)) * (24)::double precision) + date_part('hour'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + date_part('minute'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + (round((date_part('second'::text, (jobs.end_date - jobs.start_date)))::numeric, 2))::double precision))::numeric, 2))::double precision AS duree,
+    jobs.geometry AS job_geometry
    FROM (public.jobs
      JOIN public.projects ON ((projects.id = jobs.id_project)));
 
 
 ALTER TABLE public.view_jobs OWNER TO postgres;
+
+--
+-- Name: view_jobs_geometry; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.view_jobs_geometry AS
+ SELECT jobs.id,
+    jobs.name,
+    jobs.start_date,
+    jobs.end_date,
+    view_job.date_debut,
+    view_job.hms_debut,
+    view_job.duree,
+    jobs.command,
+    jobs.status,
+    jobs.return_code,
+    jobs.log,
+    jobs.id_project,
+    projects.name AS name_project,
+    jobs.id_session,
+    view_job.session_host,
+    jobs.tags,
+    jobs.geometry
+   FROM ((public.jobs
+     JOIN public.projects ON ((projects.id = jobs.id_project)))
+     JOIN public.view_job ON ((view_job.job_id = jobs.id)))
+  WHERE (jobs.geometry IS NOT NULL);
+
+
+ALTER TABLE public.view_jobs_geometry OWNER TO postgres;
 
 --
 -- Name: view_projects; Type: VIEW; Schema: public; Owner: postgres
@@ -1151,6 +1198,13 @@ ALTER TABLE ONLY public.sessions
 --
 
 CREATE INDEX id_project_idx ON public.jobs USING btree (id_project);
+
+
+--
+-- Name: jobs_geometry_geom_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX jobs_geometry_geom_idx ON public.jobs USING gist (geometry);
 
 
 --
