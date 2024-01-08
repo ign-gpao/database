@@ -874,14 +874,16 @@ CREATE VIEW public.view_jobs AS
     jobs.status AS job_status,
     jobs.return_code AS job_return_code,
     jobs.id_project AS job_id_project,
-    jobs.id_session AS job_session,
     projects.name AS project_name,
+    sessions.id AS session_id,
+    sessions.host AS session_host,
     to_char(jobs.start_date, 'DD-MM-YYYY'::text) AS date,
     to_char(timezone('UTC'::text, jobs.start_date), 'HH24:MI:SS'::text) AS hms,
     (round((((((((date_part('day'::text, (jobs.end_date - jobs.start_date)) * (24)::double precision) + date_part('hour'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + date_part('minute'::text, (jobs.end_date - jobs.start_date))) * (60)::double precision) + (round((date_part('second'::text, (jobs.end_date - jobs.start_date)))::numeric, 2))::double precision))::numeric, 2))::double precision AS duree,
     jobs.geometry AS job_geometry
-   FROM (public.jobs
-     JOIN public.projects ON ((projects.id = jobs.id_project)));
+   FROM ((public.jobs
+     JOIN public.projects ON ((projects.id = jobs.id_project)))
+     LEFT JOIN public.sessions ON ((sessions.id = jobs.id_session)));
 
 
 ALTER TABLE public.view_jobs OWNER TO postgres;
