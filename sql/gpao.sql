@@ -902,25 +902,24 @@ ALTER TABLE public.view_projects OWNER TO postgres;
 --
 -- Name: view_project_dependencies; Type: VIEW; Schema: public; Owner: postgres
 --
-
-CREATE VIEW public.view_project_dependencies AS
- SELECT projectdependencies.id AS dep_id,
-    projectdependencies.upstream AS dep_up,
-    projectdependencies.downstream AS dep_down,
-    projectdependencies.active AS dep_active,
-    view_projects.project_id,
-    view_projects.project_name,
-    view_projects.project_status,
-    view_projects.project_priority,
-    view_projects.ready,
-    view_projects.done,
-    view_projects.waiting,
-    view_projects.running,
-    view_projects.failed,
-    view_projects.total
-   FROM (public.projectdependencies
-     JOIN public.view_projects ON ((view_projects.project_id = projectdependencies.upstream)));
-
+CREATE OR REPLACE VIEW public.view_project_dependencies AS
+SELECT
+  d.id AS dep_id,
+  d.upstream AS dep_up,
+  d.downstream AS dep_down,
+  d.active AS dep_active,
+  p.id AS project_id,
+  p.name AS project_name,
+  p.status AS project_status,
+  p.priority AS project_priority,
+  COALESCE((SELECT COUNT(*) FROM public.jobs j WHERE j.id_project = p.id AND j.status = 'ready'), 0) AS ready,
+  COALESCE((SELECT COUNT(*) FROM public.jobs j WHERE j.id_project = p.id AND j.status = 'done'), 0) AS done,
+  COALESCE((SELECT COUNT(*) FROM public.jobs j WHERE j.id_project = p.id AND j.status = 'waiting'), 0) AS waiting,
+  COALESCE((SELECT COUNT(*) FROM public.jobs j WHERE j.id_project = p.id AND j.status = 'running'), 0) AS running,
+  COALESCE((SELECT COUNT(*) FROM public.jobs j WHERE j.id_project = p.id AND j.status = 'failed'), 0) AS failed,
+  COALESCE((SELECT COUNT(*) FROM public.jobs j WHERE j.id_project = p.id), 0) AS total
+FROM public.projectdependencies d
+JOIN public.projects p ON p.id = d.upstream;
 
 ALTER TABLE public.view_project_dependencies OWNER TO postgres;
 
