@@ -1,4 +1,4 @@
-FROM postgres:14.2
+FROM postgres:17.9
 
 LABEL maintainer="IGN"
 LABEL version="0.17.0"
