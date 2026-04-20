@@ -1151,8 +1151,13 @@ ALTER TABLE ONLY public.sessions
 -- Name: id_project_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX id_project_idx ON public.jobs USING btree (id_project);
+CREATE INDEX idx_jobs_id_project ON public.jobs(id_project);
 
+CREATE INDEX idx_jobs_status ON public.jobs(status);
+
+CREATE INDEX idx_jobs_id_session ON public.jobs(id_session);
+
+CREATE INDEX idx_sessions_status ON public.sessions(status);
 
 --
 -- Name: view_projects _RETURN; Type: RULE; Schema: public; Owner: postgres
