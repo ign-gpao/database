@@ -152,10 +152,11 @@ CREATE FUNCTION public.clean_unused_session() RETURNS integer
 DECLARE
   nb_sessions integer;
 BEGIN
-  DELETE FROM sessions WHERE id IN (SELECT sessions.id
-  FROM sessions
-  LEFT JOIN jobs ON sessions.id = jobs.id_session
-  WHERE jobs.id_session IS NULL and sessions.status = 'closed');
+  DELETE FROM sessions s
+  WHERE s.status = 'closed'
+    AND NOT EXISTS (
+      SELECT 1 FROM jobs j WHERE j.id_session = s.id
+  );
   GET DIAGNOSTICS nb_sessions = ROW_COUNT;
   RETURN nb_sessions;
 END;
