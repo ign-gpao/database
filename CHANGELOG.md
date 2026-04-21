@@ -1,5 +1,13 @@
 # 📑 Changelog
 
+## [0.18.0](https://github.com/ign-gpao/database/tree/0.18.0) (2026-04-21)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.17.0...0.18.0)
+
+### 📁 Other pull requests
+
+- Optimize database [\#31](https://github.com/ign-gpao/database/pull/31) ([gliegard](https://github.com/gliegard))
+
 ## [0.17.0](https://github.com/ign-gpao/database/tree/0.17.0) (2023-06-27)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.16.0...0.17.0)
