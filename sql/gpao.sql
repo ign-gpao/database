@@ -870,6 +870,45 @@ CREATE VIEW public.view_jobs AS
 
 ALTER TABLE public.view_jobs OWNER TO postgres;
 
+CREATE VIEW public.view_jobs_with_host AS
+SELECT
+  jobs.id AS job_id,
+  jobs.name AS job_name,
+  jobs.start_date AS job_start_date,
+  jobs.end_date AS job_end_date,
+  jobs.status AS job_status,
+  jobs.return_code AS job_return_code,
+  jobs.id_project AS job_id_project,
+  jobs.id_session AS job_session,
+  projects.name AS project_name,
+  sessions.host AS job_host,
+  to_char(jobs.start_date, 'DD-MM-YYYY') AS date,
+  to_char(timezone('UTC', jobs.start_date), 'HH24:MI:SS') AS hms,
+  (
+    round(
+      (
+        (
+          (
+            (
+              (
+                (
+                  date_part('day', (jobs.end_date - jobs.start_date)) * 24
+                ) + date_part('hour', (jobs.end_date - jobs.start_date))
+              ) * 60
+            ) + date_part('minute', (jobs.end_date - jobs.start_date))
+          ) * 60
+        ) + round(date_part('second', (jobs.end_date - jobs.start_date))::numeric, 2)
+      )::numeric, 2
+    )
+  )::double precision AS duree
+FROM public.jobs
+JOIN public.projects ON projects.id = jobs.id_project
+LEFT JOIN public.sessions ON sessions.id = jobs.id_session;
+
+ALTER TABLE public.view_jobs_with_host OWNER TO postgres;
+
+--
+
 --
 -- Name: view_projects; Type: VIEW; Schema: public; Owner: postgres
 --
