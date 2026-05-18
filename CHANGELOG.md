@@ -1,5 +1,13 @@
 # 📑 Changelog
 
+## [0.19.0](https://github.com/ign-gpao/database/tree/0.19.0) (2026-05-18)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.18.0...0.19.0)
+
+### 📁 Other pull requests
+
+- new view view\_jobs\_with\_host to add the host [\#32](https://github.com/ign-gpao/database/pull/32) ([gliegard](https://github.com/gliegard))
+
 ## [0.18.0](https://github.com/ign-gpao/database/tree/0.18.0) (2026-04-21)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.17.0...0.18.0)
