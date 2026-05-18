@@ -1064,7 +1064,7 @@ CREATE VIEW public.view_sessions AS
     ((((((date_part('day'::text, (sessions.end_date - sessions.start_date)) * (24)::double precision) + date_part('hour'::text, (sessions.end_date - sessions.start_date))) * (60)::double precision) + date_part('minute'::text, (sessions.end_date - sessions.start_date))) * (60)::double precision) + (round((date_part('second'::text, (sessions.end_date - sessions.start_date)))::numeric, 2))::double precision) AS duree,
     to_char(sessions.end_date, 'DD-MM-YYYY'::text) AS date_fin,
     to_char(timezone('UTC'::text, sessions.end_date), 'HH24:MI:SS'::text) AS hms_fin,
-    to_char(timezone('UTC'::text, sessions.last_activity), 'HH24:MI:SS'::text) AS hms_last_activity
+    to_char(timezone('UTC'::text, sessions.last_activity), 'YYYY:MM:DD HH24:MI:SS'::text) AS hms_last_activity
    FROM public.sessions;
 
 
