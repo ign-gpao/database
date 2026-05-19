@@ -1,5 +1,13 @@
 # 📑 Changelog
 
+## [0.20.0](https://github.com/ign-gpao/database/tree/0.20.0) (2026-05-19)
+
+[Full Changelog](https://github.com/ign-gpao/database/compare/0.19.0...0.20.0)
+
+### 📁 Other pull requests
+
+- view\_sessions show date with - separator instead of : [\#33](https://github.com/ign-gpao/database/pull/33) ([gliegard](https://github.com/gliegard))
+
 ## [0.19.0](https://github.com/ign-gpao/database/tree/0.19.0) (2026-05-18)
 
 [Full Changelog](https://github.com/ign-gpao/database/compare/0.18.0...0.19.0)
